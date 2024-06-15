@@ -1,0 +1,48 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Property {
+  city        String?
+  createdAt   DateTime               @default(now())
+  description String?
+  id          String                 @id @default(auto()) @map("_id") @db.ObjectId
+  inquiries   Inquiry[]
+  location    String?
+  name        String?
+  price       Float?
+  state       String?
+  typeField   EnumPropertyTypeField?
+  updatedAt   DateTime               @updatedAt
+}
+
+model Inquiry {
+  createdAt       DateTime  @default(now())
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  message         String?
+  property        Property? @relation(fields: [propertyId], references: [id])
+  propertyId      String?   @db.ObjectId
+  updatedAt       DateTime  @updatedAt
+  userContactInfo String?
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+enum EnumPropertyTypeField {
+  Option1
+}
